@@ -1,0 +1,51 @@
+package com.example.springrest1;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+@SpringBootApplication
+public class Springrest1Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Springrest1Application.class, args);
+    }
+}
+
+@RestController
+@RequestMapping("/api/tasks")
+class TaskController {
+
+    private final List<String> t1 = new ArrayList<>(Arrays.asList("complete chapter1", "complete chapter2"));
+
+    @GetMapping
+    public List<String> getTl() {
+        return t1;
+    }
+
+    @PostMapping
+    public String addTask(@RequestBody String newTask) {
+        t1.add(newTask);
+        return "Task added successfully: " + newTask;
+    }
+
+    @PutMapping("/{id}")
+    public String updateTask(@PathVariable int id, @RequestBody String updateTask) {
+        if (id >= 0 && id < t1.size()) {
+            t1.set(id, updateTask);
+            return "Task at index " + id + " updated to " + updateTask;
+        }
+        return "Task not found";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteTask(@PathVariable int id) {
+        if (id >= 0 && id < t1.size()) {
+            String removedTask = t1.remove(id);
+            return "Deleted task at index " + id + ": " + removedTask;
+        }
+        return "Task not found";
+    }
+}
